@@ -57,3 +57,24 @@ describe('favorite blog', () => {
     assert.deepStrictEqual(listHelper.favoriteBlog(blogs), blogs[1])
   })
 })
+
+describe('most blogs', () => {
+  test('of empty list is null', () => {
+    assert.strictEqual(listHelper.mostBlogs([]), null)
+  })
+
+  test('when list has one blog returns that blog', () => {
+    const blog = { author: 'Author', blogs: 1 }
+    assert.deepStrictEqual(listHelper.mostBlogs([blog]), blog)
+  })
+
+  test('of a bigger list returns the author who has written the most blogs', () => {
+    const blogs = [
+      { title: 'A', author: 'A', likes: 3 },
+      { title: 'B', author: 'B', likes: 12 },
+      { title: 'C', author: 'C', likes: 7 },
+      { title: 'D', author: 'B', likes: 6 }
+    ]
+    assert.deepStrictEqual(listHelper.mostBlogs(blogs), { author: 'B', blogs: 2 })
+  })
+})
