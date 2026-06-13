@@ -79,7 +79,7 @@ describe('most blogs', () => {
   })
 })
 
-describe('most blogs', () => {
+describe('most likes', () => {
   test('of empty list is null', () => {
     assert.strictEqual(listHelper.mostBlogs([]), null)
   })
