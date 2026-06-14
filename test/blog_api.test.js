@@ -23,8 +23,32 @@ test('blogs have id property defined', async () => {
 
   // Validar el campo en cada registro
   response.body.forEach(blog => {
-  assert(blog.id)
-}) 
+    assert(blog.id)
+  }) 
+})
+
+test('a valid blog can be added', async () => {
+  const blogsAtStart = await api
+    .get('/api/blogs')
+
+  const newBlog = {
+    title: 'Canonical string reduction',
+    author: 'Edsger W. Dijkstra',
+    url: 'http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html',
+    likes: 12
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+
+  const blogsAtEnd = await api.get('/api/blogs')
+  assert.strictEqual(blogsAtEnd.body.length, blogsAtStart.body.length + 1)
+
+  const titles = blogsAtEnd.body.map(b => b.title)
+  assert(titles.includes('Canonical string reduction'))
 })
 
 after(async () => {
