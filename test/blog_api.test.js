@@ -67,6 +67,34 @@ test('if likes property is missing, it defaults to 0', async () => {
   assert.strictEqual(response.body.likes, 0)
 })
 
+test('blog without title is not added', async () => {
+  const newBlog = {
+    author: 'Robert C. Martin',
+    url: 'http://blog.cleancoder.com/uncle-bob/2017/03/03/TDD-Harms-Architecture.html',
+    likes: 5
+  }
+
+  const response = await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(400)
+    .expect('Content-Type', /application\/json/)
+})
+
+test('blog without url is not added', async () => {
+  const newBlog = {
+    title: 'TDD harms architecture',
+    author: 'Robert C. Martin',
+    likes: 5
+  }
+
+  const response = await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(400)
+    .expect('Content-Type', /application\/json/)
+})
+
 after(async () => {
   await mongoose.connection.close()
 })
