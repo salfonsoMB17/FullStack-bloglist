@@ -1,0 +1,10 @@
+POST http://localhost:3003/api/blogs
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3R1c2VyIiwiaWQiOiI2YTUyYWU4NmJhYjUxZmUzZTRjM2VmMTAiLCJpYXQiOjE3ODM4MDcyNDh9.WkwxP6lqrdXwVWYLW7H1-E6QK36j-G4GXPQGcvXK46U
+
+{
+  "title": "Test with token",
+  "author": "Robert C. Martin",
+  "url": "http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.html",
+  "likes": 5
+}
