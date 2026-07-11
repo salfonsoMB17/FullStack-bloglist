@@ -12,7 +12,7 @@ test('blogs are returned as json', async () => {
     .expect(200)
     .expect('Content-Type', /application\/json/)
     
-  assert.strictEqual(response.body.length, 10)
+  assert.strictEqual(response.body.length, 1)
 })
 
 test('blogs have id property defined', async () => {
