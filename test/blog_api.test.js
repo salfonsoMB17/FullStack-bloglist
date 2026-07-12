@@ -6,6 +6,16 @@ const assert = require('node:assert')
 
 const api = supertest(app)
 
+let token
+
+test('login to get token', async () => {
+  const response = await api
+    .post('/api/login')
+    .send({ username: 'testuser', password: 'secretpassword' })
+
+  token = response.body.token
+})
+
 test('blogs are returned as json', async () => {
   const response = await api
     .get('/api/blogs')
@@ -40,6 +50,7 @@ test('a valid blog can be added', async () => {
 
   await api
     .post('/api/blogs')
+    .set('Authorization', `Bearer ${token}`)
     .send(newBlog)
     .expect(201)
     .expect('Content-Type', /application\/json/)
@@ -60,6 +71,7 @@ test('if likes property is missing, it defaults to 0', async () => {
 
   const response = await api
     .post('/api/blogs')
+    .set('Authorization', `Bearer ${token}`)
     .send(newBlog)
     .expect(201)
     .expect('Content-Type', /application\/json/)
@@ -76,6 +88,7 @@ test('blog without title is not added', async () => {
 
   const response = await api
     .post('/api/blogs')
+    .set('Authorization', `Bearer ${token}`)
     .send(newBlog)
     .expect(400)
     .expect('Content-Type', /application\/json/)
@@ -90,6 +103,7 @@ test('blog without url is not added', async () => {
 
   const response = await api
     .post('/api/blogs')
+    .set('Authorization', `Bearer ${token}`)
     .send(newBlog)
     .expect(400)
     .expect('Content-Type', /application\/json/)
@@ -114,10 +128,25 @@ test('a blog can be deleted', async () => {
 
   await api
     .delete(`/api/blogs/${blogToDelete.id}`)
+    .set('Authorization', `Bearer ${token}`)
     .expect(204)
 
   const blogsAtEnd = await api.get('/api/blogs')
   assert.strictEqual(blogsAtEnd.body.length, blogsAtStart.body.length - 1)
+})
+
+test('adding a blog fails with 401 if token is not provided', async () => {
+  const newBlog = {
+    title: 'Test without token',
+    author: 'Robert C. Martin',
+    url: 'http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.html',
+    likes: 5
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(401)
 })
 
 after(async () => {
