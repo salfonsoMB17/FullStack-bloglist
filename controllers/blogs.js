@@ -19,7 +19,8 @@ blogsRouter.post('/', async (request, response) => {
     const savedBlog = await blog.save()
     user.blogs = user.blogs.concat(savedBlog._id)
     await user.save()
-    response.status(201).json(savedBlog)
+    const populatedBlog = await Blog.findById(savedBlog._id).populate('user', { username: 1, name: 1 })
+    response.status(201).json(populatedBlog)
   } catch (error) {
     if (error.name === 'JsonWebTokenError') {
       return response.status(401).json({ error: 'token invalid or missing' })
@@ -29,8 +30,8 @@ blogsRouter.post('/', async (request, response) => {
 })
 
 blogsRouter.put('/:id', async (request, response) => {
-  try {   
-    const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, request.body, { returnDocument: 'after' })
+  try {
+    const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, request.body, { returnDocument: 'after' }).populate('user', { username: 1, name: 1 })
     response.status(200).json(updatedBlog)
   } catch (error) {
     response.status(400).json({ error: error.message })
